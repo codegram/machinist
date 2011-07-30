@@ -6,7 +6,12 @@ module Machinist
 
   class DataMapperAdapter
     def self.has_association?(object, attribute)
-      object.class.relationships.has_key?(attribute)
+      relationships = object.class.relationships
+      if relationships.respond_to? :'named?'
+        relationships.named?(attribute)
+      else
+        relationships.has_key?(attribute)
+      end
     end
 
     def self.class_for_association(object, attribute)
